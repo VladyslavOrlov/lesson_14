@@ -1,133 +1,162 @@
-var userObj = {
-  firstName: 'Vlad',
-  lastName: 'Orlov',
-  age: 27,
-  fullName() {
-    return `${userObj.firstName} ${userObj.lastName}`;
+let counter = (function() {
+  let count = 0;
+
+  return function (num) {
+    count = num === undefined ? count : num;
+
+    return count++;
   }
- };
+}
+());
 
- console.log(userObj);
+console.log(counter()); // 0
+console.log(counter()); // 1
+console.log(counter(100)); // 100
+console.log(counter()); // 101
+console.log(counter(500)); // 500
+console.log(counter()); // 501
+console.log(counter(0)); // 0
+console.log(counter()); // 1
 
- console.log(userObj.fullName());
+
+let counting = (function () {
+  let count = 0;
+
+  return {
+    value(num) {
+      if (num !== undefined) count = num;
+
+      return count;
+    },
+    decrement() {
+      count--;
+    },
+    increment() {
+      count++;
+    }
+  };
+}());
+
+console.log(counting.value()); // 0
+counting.increment();
+counting.increment();
+counting.increment();
+console.log(counting.value()); // 3
+counting.decrement();
+counting.decrement();
+console.log(counting.value()); // 1
+console.log(counting.value(100)); // 100
+counting.decrement();
+console.log(counting.value()); // 99
+console.log(counting.value(200)); // 200
+counting.increment();
+console.log(counting.value()); // 201
 
 
-function defUpperStr(str) {
-  return (str || 'Default text').toUpperCase();
+
+let myPrint = (a, b, res) => `${a}^${b}=${res}`;
+let myPow = (a, b, callback) => {
+  let pow = (x, n) => {
+    if (n !== 1) return x *= pow(x, n - 1);
+
+    return x;
+  };
+
+  return callback(a, b, pow(a, b));
+};
+
+console.log(myPow(3, 4, myPrint)); // 3^4=81
+console.log(myPow(2, 3, myPrint)); // 2^3=8
+
+function info() {
+  return `${this.name} ${this.model}, ${this.engine}cc, year ${this.year}, ${this.used}`;
 }
 
-console.log(defUpperStr('My text'));
-console.log(defUpperStr());
+let yearNow = new Date().getFullYear();
 
-
-function evenFn(n) {
-  var arr = [];
-
-  for (let i = 1; i <= n; i++) if (i % 2 === 0) arr.push(i);
-
-  return arr;
-}
-
-console.log(evenFn(12));
-console.log(evenFn(17));
-
-
-function weekFn(cond) {
-  var str = '';
-
-  switch (cond) {
-    case 1:
-      str = 'Понедельник';
-      break;
-    case 2:
-      str = 'Вторник';
-      break;
-    case 3:
-      str = 'Среда';
-      break;
-    case 4:
-      str = 'Четверг';
-      break;
-    case 5:
-      str = 'Пятница';
-      break;
-    case 6:
-      str = 'Суббота';
-      break;
-    case 7:
-      str = 'Воскресенье';
-      break;
-    default:
-      str = null;
+let car = {
+  engine: 1800,
+  model: 'Prius',
+  name: 'Toyota',
+  year: 2010,
+  info: info,
+  get used() {
+    return this.year !== yearNow ? 'used' : 'new';
+  },
+  set used(value) {
+    if (value === 'new' && this.year < yearNow) this.year = yearNow;
   }
+};
 
-  return str;
+let car2 = {
+  engine: 2000,
+  model: 'Elantra',
+  name: 'Hyndai',
+  year: 2022,
+  info: info,
+  get used() {
+    return yearNow - this.year ? 'used' : 'new';
+  },
+  set used(value) {
+    if (value === 'new' && this.year < yearNow) this.year = yearNow;
+  }
+};
+
+
+console.log(car.info());
+car.used = 'new';
+console.log(car.info());
+car.used = 'used';
+console.log(car.info());
+console.log(car2.info());
+car.used = 'used';
+console.log(car2.info());
+
+let list = [12, 23, 100, 34, 56, 9, 201];
+
+let myMax = (arg) => Math.max.apply(Math, arg);
+
+console.log(myMax(list));
+
+
+function myMul(a, b) {
+  return a * b;
 }
 
-console.log(weekFn(1));
-console.log(weekFn(4));
-console.log(weekFn(100));
-console.log(weekFn(6.8));
+let myDouble = myMul.bind(null, 2);
+
+console.log(myDouble(3));
+console.log(myDouble(4));
+console.log(myDouble(7));
+
+let myTriple = myMul.bind(null, 3);
 
 
-function ageClassification(num) {
-  return num > 0 
-  ? num > 24 
-  ? num > 44
-  ? num > 65
-  ? num > 75
-  ? num > 90
-  ? num > 122
-  ? null
-  : 'долгожители' 
-  : 'старческий возраст' 
-  : 'пожилой возраст' 
-  : 'средний возраст' 
-  : 'молодой возраст' 
-  : 'детский возраст' 
-  : null;
-}
+console.log(myTriple(3));
+console.log(myTriple(5));
+console.log(myTriple(9));
 
-console.log('-1:', ageClassification(-1));
-console.log('12:', ageClassification(12));
-console.log('30:', ageClassification(30));
-console.log('100:', ageClassification(100));
+let notUniqNums = [1, 1, 2, 3, 4, 5, 6]
+let notUniqStrings = [
+  'Vlad',
+  'Bogdan',
+  'Viktoria',
+  'Roman',
+  'Denis',
+  'Bogdan',
+  'Roman',
+  'Viktoria'
+]
 
+let myUniq = (arr) => {
+  let set = new Set();
 
-function oddFn(n) {
-  var arr = [];
-  var i = 0;
+  arr.forEach((val) => {
+    set.add(val)
+  });
 
-  while (i++ < n) if (i % 2 !== 0) arr.push(i);
+  return set;
+};
 
-  return arr;
-}
-
-console.log(oddFn(9));
-console.log(oddFn(16));
-console.log(oddFn(29));
-
-
-function mainFunc (a, b, cb) {
-  if (cb && typeof cb === 'function') return cb(a, b);
-
-  return false;
-}
-
-
-function cbRandom(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function cbPow(num, pow) {
-  return Math.pow(num, pow);
-}
-
-function cbAdd(a, b) {
-  return a + b;
-}
-
-console.log(mainFunc(2, 5, cbRandom));
-console.log(mainFunc(2, 5, cbPow));
-console.log(mainFunc(2, 5, cbAdd));
-console.log(mainFunc(2, 5, 'not a func'));
+console.log(myUniq(notUniqNums));
+console.log(myUniq(notUniqStrings));
